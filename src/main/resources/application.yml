@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: sharesAnalysiser
+  jackson:
+    time-zone: GMT+8
+server:
+  port: 8080
