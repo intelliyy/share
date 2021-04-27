@@ -42,7 +42,7 @@ public class ExcelExecutor implements IExecutor {
     public Object invoke(Method method, Object[] args) {
         Object obj = getInvokeObj(method);
         if (obj == null) {
-            log.info("excel存储执行器不支持此方法");
+            log.info("excel存储组件不支持此方法");
             return null;
         }
         try {
