@@ -1,11 +1,15 @@
 package com.yyshare.dao;
 
+import com.yyshare.config.ConfigProperties;
 import com.yyshare.exception.ShareException;
+import com.yyshare.spring.SpringContext;
 import com.yyshare.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
@@ -16,6 +20,7 @@ import java.util.List;
 /**
  * dao执行器
  */
+@Component
 public class DaoExecutor {
     public static String MODEL_EXCEL = "excel";
     public static String MODEL_MYSQL = "mysql";
@@ -42,6 +47,11 @@ public class DaoExecutor {
         }
     }
 
+    public static void initExecutors() {
+        ConfigProperties configProperties = SpringContext.getBean(ConfigProperties.class);
+        
+    }
+
     public static void exchangeModel(String model) {
 
     }
@@ -51,7 +61,7 @@ public class DaoExecutor {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            
+
             return null;
         }
     }

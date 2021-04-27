@@ -36,7 +36,8 @@ public class SharesDaoImpl implements ISharesDao {
             try {
                 ls = ExcelUtil.getData(path, dateFormat, "Sheet1", "时间", "收盘", "ema12", "ema26", "diff", "dea", "macd");
             } catch (IOException e) {
-                throw new ShareException("读取基本数据文件异常");
+                log.info("读取数据文件异常", e);
+                throw new ShareException("读取数据文件异常");
             }
             for (int i = 0; i < ls[0].size(); i++) {
                 shares.add(new Share(Double.parseDouble(ls[1].get(i)), Double.parseDouble(ls[6].get(i)), Double.parseDouble(ls[4].get(i)),

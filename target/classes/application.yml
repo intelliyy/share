@@ -9,3 +9,6 @@ server:
     context-path: /yyshare
 logging:
   config:  classpath:logback-spring.xml
+dao:
+  executors:
+    excel: com.yyshare.dao.excel.ExcelExecutor
