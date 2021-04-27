@@ -44,7 +44,7 @@ public class ExcelUtil {
         }
     }
 
-    public static List<String>[] getData(String url, String dateFormat, String sheetName, String... keys) throws IOException, IOException {
+    public static List<String>[] getData(String url, String dateFormat, String... keys) throws IOException, IOException {
         Workbook book;
         File file = new File(url);
         FileInputStream input = null;
@@ -55,7 +55,7 @@ public class ExcelUtil {
             } else {
                 book = new HSSFWorkbook(input);
             }
-            Sheet sheet = book.getSheet(sheetName);
+            Sheet sheet = book.getSheetAt(0);
             List<String>[] datas = new List[keys.length];
             int[] indexs = new int[keys.length];
             for (int i = 0; i < datas.length; i++) {
@@ -80,6 +80,21 @@ public class ExcelUtil {
             if (input != null) {
                 input.close();
             }
+        }
+    }
+
+    /**
+     * 获取excel工作簿
+     * @param input
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public static Workbook createWorkBook(FileInputStream input, String name) throws IOException {
+        if (name.endsWith("x")) {
+            return new XSSFWorkbook(input);
+        } else {
+            return new HSSFWorkbook(input);
         }
     }
 

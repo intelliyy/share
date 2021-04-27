@@ -32,7 +32,7 @@ public class SharesDaoImpl implements ISharesDao {
             }
             List<String>[] ls;
             try {
-                ls = ExcelUtil.getData(path, dateFormat, "Sheet1", "时间", "收盘", "ema12", "ema26", "diff", "dea", "macd");
+                ls = ExcelUtil.getData(path, dateFormat, "时间", "收盘", "ema12", "ema26", "diff", "dea", "macd");
             } catch (IOException e) {
                 log.info("读取数据文件异常", e);
                 throw new ShareException("读取数据文件异常");
@@ -49,10 +49,32 @@ public class SharesDaoImpl implements ISharesDao {
     public void save(List<Share> shares) {
         for (Share share : shares) {
             String path = Constants.EXCEL_DATA_PATH + DateUtil.format(share.getTime(), "yyyyMMdd") + "-" + share.getType() + ".xlsx";
-            Workbook book;
             File file = new File(path);
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    log.info("创建文件异常", e);
+                    throw new ShareException("保存数据异常");
+                }
+            }
+            Workbook book;
             FileInputStream input = null;
+            try {
+                book = ExcelUtil.createWorkBook(input, file.getName());
 
+            } catch (Exception e) {
+                log.info("保存数据异常", e);
+                throw new ShareException("保存数据异常");
+            } finally {
+                if (input != null) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        log.info("文件关闭异常", e);
+                    }
+                }
+            }
         }
     }
 
