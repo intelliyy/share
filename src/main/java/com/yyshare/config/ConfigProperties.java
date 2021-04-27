@@ -12,4 +12,5 @@ import java.util.Map;
 public class ConfigProperties {
 
     private Map<String, String> executors;
+    private String def;
 }

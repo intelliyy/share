@@ -3,6 +3,7 @@ package com.yyshare.dao.excel;
 import com.yyshare.dao.IExecutor;
 import com.yyshare.exception.ShareException;
 import com.yyshare.util.ClassUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * excel存储组件执行器
  */
+@Slf4j
 public class ExcelExecutor implements IExecutor {
 
     {
@@ -30,6 +32,7 @@ public class ExcelExecutor implements IExecutor {
 
     @Override
     public Object invoke(Method method, Object[] args) {
+        log.info("excel executor");
         return null;
     }
 }

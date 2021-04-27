@@ -12,3 +12,4 @@ logging:
 dao:
   executors:
     excel: com.yyshare.dao.excel.ExcelExecutor
+  def: excel

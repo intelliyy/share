@@ -7,9 +7,8 @@ import com.yyshare.dao.ISharesDao;
 import com.yyshare.entity.Share;
 import com.yyshare.exception.ShareException;
 import com.yyshare.util.ExcelUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 public class SharesDaoImpl implements ISharesDao {
-
-    private static Logger log = LoggerFactory.getLogger(SharesDaoImpl.class);
 
     @Override
     public List<Share> findByTime(Date start, Date end, String type) {
