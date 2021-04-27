@@ -2,20 +2,22 @@ package com.yyshare.dao.excel;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.yyshare.constants.Constants;
 import com.yyshare.dao.ISharesDao;
 import com.yyshare.entity.Share;
 import com.yyshare.exception.ShareException;
 import com.yyshare.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Slf4j
 public class SharesDaoImpl implements ISharesDao {
@@ -32,7 +34,7 @@ public class SharesDaoImpl implements ISharesDao {
             }
             List<String>[] ls;
             try {
-                ls = ExcelUtil.getData(path, dateFormat, "时间", "收盘", "ema12", "ema26", "diff", "dea", "macd");
+                ls = ExcelUtil.getData(path, dateFormat, getAllTitles());
             } catch (IOException e) {
                 log.info("读取数据文件异常", e);
                 throw new ShareException("读取数据文件异常");
@@ -45,37 +47,93 @@ public class SharesDaoImpl implements ISharesDao {
         return shares;
     }
 
+    /**
+     * 根据type进行分类
+     * @param shares
+     * @return
+     */
+    private Collection<List<Share>> classify(List<Share> shares) {
+        Map<String, List<Share>> map = new HashMap<>();
+        for (Share share : shares) {
+            String key = share.getType() + "-" + DateUtil.format(share.getTime(), "yyyyMMdd");
+            List<Share> ls = map.get(key);
+            if (ls == null) {
+                ls = new ArrayList<>();
+                map.put(key, ls);
+            }
+            ls.add(share);
+        }
+        return map.values();
+    }
+
     @Override
     public void save(List<Share> shares) {
-        for (Share share : shares) {
-            String path = Constants.EXCEL_DATA_PATH + DateUtil.format(share.getTime(), "yyyyMMdd") + "-" + share.getType() + ".xlsx";
-            File file = new File(path);
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    log.info("创建文件异常", e);
-                    throw new ShareException("保存数据异常");
-                }
-            }
-            Workbook book;
-            FileInputStream input = null;
-            try {
-                book = ExcelUtil.createWorkBook(input, file.getName());
+        Collection<List<Share>> cs = classify(shares);
+        for (List<Share> ls : cs) {
+            saveToFile(ls);
+        }
 
-            } catch (Exception e) {
-                log.info("保存数据异常", e);
+    }
+
+    private void saveToFile(List<Share> shares) {
+        Share basic = shares.get(0);
+        String path = Constants.EXCEL_DATA_PATH + DateUtil.format(basic.getTime(), "yyyyMMdd") + "-" + basic.getType() + ".xlsx";
+        File file = new File(path);
+        boolean exist = true;
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                log.info("创建文件异常", e);
                 throw new ShareException("保存数据异常");
-            } finally {
-                if (input != null) {
-                    try {
-                        input.close();
-                    } catch (IOException e) {
-                        log.info("文件关闭异常", e);
-                    }
+            }
+        }
+        Workbook book;
+        FileInputStream input = null;
+        try {
+            book = ExcelUtil.createWorkBook(input, file.getName());
+            Sheet sheet = book.getSheetAt(0);
+            if (!exist) {
+                // 创建标题
+                List<String> titles = Arrays.asList(getAllTitles());
+                ExcelUtil.addData(sheet.createRow(0), titles);
+            }
+            int i = 1;
+            for (Share share : shares) {
+                List<String> data = shareToList(share);
+                ExcelUtil.addData(sheet.getRow(i++), data);
+            }
+            book.write(new FileOutputStream(file));
+        } catch (Exception e) {
+            log.info("保存数据异常", e);
+            throw new ShareException("保存数据异常");
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    log.info("文件关闭异常", e);
                 }
             }
         }
+    }
+
+    private List<String> shareToList(Share share) {
+        return Arrays.asList(DateUtil.format(share.getTime(), getDateFormat(share.getType())),
+                NumberUtil.roundStr(share.getPrice(), 2, RoundingMode.FLOOR),
+                NumberUtil.roundStr(share.getEma12(), 2, RoundingMode.FLOOR),
+                NumberUtil.roundStr(share.getEma26(), 2, RoundingMode.FLOOR),
+                NumberUtil.roundStr(share.getDiff(), 2, RoundingMode.FLOOR),
+                NumberUtil.roundStr(share.getDea(), 2, RoundingMode.FLOOR),
+                NumberUtil.roundStr(share.getMacd(), 2, RoundingMode.FLOOR));
+    }
+
+    /**
+     * 获取所有标题
+     * @return
+     */
+    private String[] getAllTitles() {
+        return new String[]{"时间", "收盘", "ema12", "ema26", "diff", "dea", "macd"};
     }
 
     /**
