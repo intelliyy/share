@@ -6,8 +6,7 @@ import java.util.Set;
 
 public interface Constants {
 
-    String EXCEL_BASE_DATA_PATH = "C:\\Users\\yuanye\\股票数据\\创业板\\基本数据\\";
-    String EXCEL_INDEX_DATA_PATH = "C:\\Users\\yuanye\\股票数据\\创业板\\指标\\";
+    String EXCEL_DATA_PATH = "C:\\Users\\yuanye\\股票数据\\创业板\\数据\\";
 
     String TYPE_30 = "30";
     String TYPE_120 = "120";

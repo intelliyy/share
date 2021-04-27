@@ -19,12 +19,12 @@ public class ShareController {
     private IShareService shareService;
 
     /**
-     * 获取股票基本数据
+     * 获取股票数据
      * @param params
      * @return
      */
-    @PostMapping("/data/base")
+    @PostMapping("/data")
     public ResponseEntity getBaseShareData(@RequestBody Map params) {
-        return new ResponseEntity(shareService.findBaseShares(params), HttpStatus.OK);
+        return new ResponseEntity(shareService.findShares(params), HttpStatus.OK);
     }
 }

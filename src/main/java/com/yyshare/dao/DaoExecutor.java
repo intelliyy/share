@@ -2,6 +2,8 @@ package com.yyshare.dao;
 
 import com.yyshare.exception.ShareException;
 import com.yyshare.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -18,6 +20,7 @@ public class DaoExecutor {
     public static String MODEL_EXCEL = "excel";
     public static String MODEL_MYSQL = "mysql";
 
+    private static Logger log = LoggerFactory.getLogger(DaoExecutor.class);
     private static DaoProxy daoProxy = new DaoProxy();
 
     public static void init(ConfigurableApplicationContext configurableApplicationContext) {
@@ -48,7 +51,7 @@ public class DaoExecutor {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("invoke");
+            
             return null;
         }
     }

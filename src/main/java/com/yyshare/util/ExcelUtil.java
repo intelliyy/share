@@ -66,7 +66,11 @@ public class ExcelUtil {
             for (int i = 1; i <= c; i++) {
                 Row row = sheet.getRow(i);
                 for (int j = 0; j < indexs.length; j++) {
-                    datas[j].add(ExcelUtil.getCellData(row.getCell(indexs[j]), dateFormat));
+                    if (indexs[j] == -1) {
+                        datas[j].add(null);
+                    } else {
+                        datas[j].add(ExcelUtil.getCellData(row.getCell(indexs[j]), dateFormat));
+                    }
                 }
             }
             return datas;

@@ -21,7 +21,7 @@ public class ShareServiceImpl implements IShareService {
     private ISharesDao sharesDao;
 
     @Override
-    public List<Share> findBaseShares(Map params) {
+    public List<Share> findShares(Map params) {
         String type = (String) params.get("type");
         String start = (String) params.get("start");
         String end = (String) params.get("end");
@@ -29,8 +29,8 @@ public class ShareServiceImpl implements IShareService {
             throw new ShareException("不支持该类型");
         }
         if (StrUtil.isBlank(end)) {
-            return sharesDao.findBaseByStartTime(DateUtil.parse(start, "yyyyMMdd"), new Date(), type);
+            return sharesDao.findByTime(DateUtil.parse(start, "yyyyMMdd"), new Date(), type);
         }
-        return sharesDao.findBaseByStartTime(DateUtil.parse(start, "yyyyMMdd"), DateUtil.parse(end, "yyyyMMdd"), type);
+        return sharesDao.findByTime(DateUtil.parse(start, "yyyyMMdd"), DateUtil.parse(end, "yyyyMMdd"), type);
     }
 }

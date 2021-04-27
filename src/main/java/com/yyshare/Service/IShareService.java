@@ -8,9 +8,9 @@ import java.util.Map;
 public interface IShareService {
 
     /**
-     * 查询股票基本数据
+     * 查询股票数据
      * @param params
      * @return
      */
-    List<Share> findBaseShares(Map params);
+    List<Share> findShares(Map params);
 }

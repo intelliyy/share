@@ -5,3 +5,7 @@ spring:
     time-zone: GMT+8
 server:
   port: 8080
+  servlet:
+    context-path: /yyshare
+logging:
+  config:  classpath:logback-spring.xml
