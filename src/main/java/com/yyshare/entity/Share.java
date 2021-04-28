@@ -19,6 +19,8 @@ public class Share {
     private String type;
     private Date time;
 
+    public Share() {}
+
     public Share(Double price, Double macd, Double diff, Double dea, Double ema12, Double ema26, String type, Date time) {
         this.price = price;
         this.macd = macd;

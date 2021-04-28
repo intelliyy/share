@@ -98,6 +98,15 @@ public class ExcelUtil {
         }
     }
 
+    /**
+     * 创建新的excel工作簿
+     * @return
+     * @throws IOException
+     */
+    public static Workbook createNewWorkBook() {
+        return new XSSFWorkbook();
+    }
+
     private static int getIndex(String key, Sheet sheet) {
         Row row = sheet.getRow(0);
         for (int i = 0;; i++) {

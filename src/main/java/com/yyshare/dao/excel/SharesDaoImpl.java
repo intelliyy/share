@@ -72,7 +72,6 @@ public class SharesDaoImpl implements ISharesDao {
         for (List<Share> ls : cs) {
             saveToFile(ls);
         }
-
     }
 
     private void saveToFile(List<Share> shares) {
@@ -90,20 +89,27 @@ public class SharesDaoImpl implements ISharesDao {
         }
         Workbook book;
         FileInputStream input = null;
+        FileOutputStream out = null;
         try {
-            book = ExcelUtil.createWorkBook(input, file.getName());
-            Sheet sheet = book.getSheetAt(0);
-            if (!exist) {
+            Sheet sheet;
+            if (!exist || file.length() == 0) {
+                book = ExcelUtil.createNewWorkBook();
+                sheet = book.createSheet();
                 // 创建标题
                 List<String> titles = Arrays.asList(getAllTitles());
                 ExcelUtil.addData(sheet.createRow(0), titles);
+            } else {
+                input = new FileInputStream(file);
+                book = ExcelUtil.createWorkBook(input, file.getName());
+                sheet = book.getSheetAt(0);
             }
             int i = 1;
             for (Share share : shares) {
                 List<String> data = shareToList(share);
-                ExcelUtil.addData(sheet.getRow(i++), data);
+                ExcelUtil.addData(sheet.createRow(i++), data);
             }
-            book.write(new FileOutputStream(file));
+            out = new FileOutputStream(file);
+            book.write(out);
         } catch (Exception e) {
             log.info("保存数据异常", e);
             throw new ShareException("保存数据异常");
@@ -112,7 +118,15 @@ public class SharesDaoImpl implements ISharesDao {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    log.info("文件关闭异常", e);
+                    log.info("文件输入流关闭异常", e);
+                }
+            }
+            if (out != null) {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                    log.info("文件输出流关闭异常", e);
                 }
             }
         }

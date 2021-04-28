@@ -5,6 +5,7 @@ import com.yyshare.exception.ShareException;
 import com.yyshare.util.ClassUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +48,13 @@ public class ExcelExecutor implements IExecutor {
         }
         try {
             return method.invoke(obj, args);
-        } catch (ShareException e) {
-            throw e;
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            if (t instanceof ShareException) {
+                throw (ShareException) t;
+            }
+            log.error("excel存储执行器出现未知异常", e);
+            throw new ShareException("excel存储执行器出现未知异常");
         } catch (Exception e) {
             log.error("excel存储执行器出现未知异常", e);
             throw new ShareException("excel存储执行器出现未知异常");
