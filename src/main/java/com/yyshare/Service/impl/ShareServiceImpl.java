@@ -33,4 +33,9 @@ public class ShareServiceImpl implements IShareService {
         }
         return sharesDao.findByTime(DateUtil.parse(start, "yyyyMMdd"), DateUtil.parse(end, "yyyyMMdd"), type);
     }
+
+    @Override
+    public void initData(Map params) {
+
+    }
 }

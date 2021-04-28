@@ -23,6 +23,30 @@ import java.util.*;
 public class SharesDaoImpl implements ISharesDao {
 
     @Override
+    public List<Share> findBaseByTime(Date start, Date end, String type) {
+        List<Share> shares = new ArrayList<>();
+        String dateFormat = getDateFormat(type);
+        for (; DateUtil.compare(start, end) < 0; start = DateUtil.offset(start, DateField.DAY_OF_YEAR, 1)) {
+            String path = Constants.EXCEL_BASE_DATA_PATH + DateUtil.format(start, "yyyyMMdd") + "-" + type + ".xlsx";
+            File f = new File(path);
+            if (!f.exists()) {
+                continue;
+            }
+            List<String>[] ls;
+            try {
+                ls = ExcelUtil.getData(path, dateFormat, getAllBaseTitles());
+            } catch (IOException e) {
+                log.info("读取数据文件异常", e);
+                throw new ShareException("读取数据文件异常");
+            }
+            for (int i = 0; i < ls[0].size(); i++) {
+                shares.add(new Share(Double.parseDouble(ls[1].get(i)), type, DateUtil.parse(ls[0].get(i), dateFormat)));
+            }
+        }
+        return shares;
+    }
+
+    @Override
     public List<Share> findByTime(Date start, Date end, String type) {
         List<Share> shares = new ArrayList<>();
         String dateFormat = getDateFormat(type);
@@ -160,7 +184,15 @@ public class SharesDaoImpl implements ISharesDao {
     }
 
     /**
-     * 获取所有标题
+     * 获取基本数据所有标题
+     * @return
+     */
+    private String[] getAllBaseTitles() {
+        return new String[]{"时间", "收盘"};
+    }
+
+    /**
+     * 获取存储数据所有标题
      * @return
      */
     private String[] getAllTitles() {

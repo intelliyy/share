@@ -27,4 +27,15 @@ public class ShareController {
     public ResponseEntity getBaseShareData(@RequestBody Map params) {
         return new ResponseEntity(shareService.findShares(params), HttpStatus.OK);
     }
+
+    /**
+     * 完善并保存股票数据
+     * @param params
+     * @return
+     */
+    @PostMapping("/init")
+    public ResponseEntity initIndex(@RequestBody Map params) {
+        shareService.initData(params);
+        return new ResponseEntity("ok", HttpStatus.OK);
+    }
 }

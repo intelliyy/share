@@ -14,6 +14,15 @@ public interface ISharesDao {
      * @param type
      * @return
      */
+    List<Share> findBaseByTime(Date start, Date end, String type);
+
+    /**
+     * 查询股票数据
+     * @param start
+     * @param end
+     * @param type
+     * @return
+     */
     List<Share> findByTime(Date start, Date end, String type);
 
     /**

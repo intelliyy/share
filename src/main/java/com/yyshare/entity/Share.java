@@ -23,6 +23,12 @@ public class Share implements Comparable<Share> {
 
     public Share() {}
 
+    public Share(Double price, String type, Date time) {
+        this.price = price;
+        this.type = type;
+        this.time = time;
+    }
+
     public Share(Double price, Double macd, Double diff, Double dea, Double ema12, Double ema26, String type, Date time) {
         this.price = price;
         this.macd = macd;

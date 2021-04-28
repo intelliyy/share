@@ -13,4 +13,10 @@ public interface IShareService {
      * @return
      */
     List<Share> findShares(Map params);
+
+    /**
+     * 完善并保存数据
+     * @param params
+     */
+    void initData(Map params);
 }
