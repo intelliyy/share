@@ -98,15 +98,32 @@ public class SharesDaoImpl implements ISharesDao {
                 // 创建标题
                 List<String> titles = Arrays.asList(getAllTitles());
                 ExcelUtil.addData(sheet.createRow(0), titles);
+                int i = 1;
+                for (Share share : shares) {
+                    List<String> data = shareToList(share);
+                    ExcelUtil.addData(sheet.createRow(i++), data);
+                }
             } else {
                 input = new FileInputStream(file);
                 book = ExcelUtil.createWorkBook(input, file.getName());
                 sheet = book.getSheetAt(0);
-            }
-            int i = 1;
-            for (Share share : shares) {
-                List<String> data = shareToList(share);
-                ExcelUtil.addData(sheet.createRow(i++), data);
+                String dateFormat = getDateFormat(basic.getType());
+                List<String>[] lsArr = ExcelUtil.getData(sheet, dateFormat, "时间");
+                List<String> dates = lsArr[0];
+                Map<String, Integer> map = new HashMap<>(dates.size() << 1);
+                for (int i = 0; i < dates.size();) {
+                    map.put(dates.get(i), ++i);
+                }
+                int maxIndex = dates.size();
+                for (Share share : shares) {
+                    Integer index = map.get(DateUtil.format(share.getTime(), dateFormat));
+                    List<String> data = shareToList(share);
+                    if (index == null) {
+                        ExcelUtil.addData(sheet.createRow(++maxIndex), data);
+                    } else {
+                        ExcelUtil.addData(sheet.getRow(index), data);
+                    }
+                }
             }
             out = new FileOutputStream(file);
             book.write(out);

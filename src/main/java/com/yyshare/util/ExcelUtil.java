@@ -44,6 +44,27 @@ public class ExcelUtil {
         }
     }
 
+    public static List<String>[] getData(Sheet sheet, String dateFormat, String... keys) {
+        List<String>[] datas = new List[keys.length];
+        int[] indexs = new int[keys.length];
+        for (int i = 0; i < datas.length; i++) {
+            datas[i] = new ArrayList<>();
+            indexs[i] = getIndex(keys[i], sheet);
+        }
+        int c = sheet.getLastRowNum();
+        for (int i = 1; i <= c; i++) {
+            Row row = sheet.getRow(i);
+            for (int j = 0; j < indexs.length; j++) {
+                if (indexs[j] == -1) {
+                    datas[j].add(null);
+                } else {
+                    datas[j].add(ExcelUtil.getCellData(row.getCell(indexs[j]), dateFormat));
+                }
+            }
+        }
+        return datas;
+    }
+
     public static List<String>[] getData(String url, String dateFormat, String... keys) throws IOException, IOException {
         Workbook book;
         File file = new File(url);
@@ -56,24 +77,7 @@ public class ExcelUtil {
                 book = new HSSFWorkbook(input);
             }
             Sheet sheet = book.getSheetAt(0);
-            List<String>[] datas = new List[keys.length];
-            int[] indexs = new int[keys.length];
-            for (int i = 0; i < datas.length; i++) {
-                datas[i] = new ArrayList<>();
-                indexs[i] = getIndex(keys[i], sheet);
-            }
-            int c = sheet.getLastRowNum();
-            for (int i = 1; i <= c; i++) {
-                Row row = sheet.getRow(i);
-                for (int j = 0; j < indexs.length; j++) {
-                    if (indexs[j] == -1) {
-                        datas[j].add(null);
-                    } else {
-                        datas[j].add(ExcelUtil.getCellData(row.getCell(indexs[j]), dateFormat));
-                    }
-                }
-            }
-            return datas;
+            return getData(sheet, dateFormat, keys);
         } catch (Exception e) {
             throw e;
         } finally {
