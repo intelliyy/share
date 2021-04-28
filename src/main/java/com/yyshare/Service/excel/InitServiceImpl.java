@@ -47,4 +47,13 @@ public class InitServiceImpl implements IInitService {
         }
         sharesDao.save(ls);
     }
+
+    @Override
+    public void transfer(Date startTime, Date endTime, String type) {
+
+    }
+
+    private void baseDataTransfer(Date startTime, Date endTime, String type) {
+        
+    }
 }

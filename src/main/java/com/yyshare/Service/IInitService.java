@@ -13,4 +13,12 @@ public interface IInitService {
      * @param type
      */
     void computeIfNull(Date startTime, Date endTime, String type);
+
+    /**
+     * 迁移基本数据保存到数据库
+     * @param startTime
+     * @param endTime
+     * @param type
+     */
+    void transfer(Date startTime, Date endTime, String type);
 }
