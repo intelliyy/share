@@ -3,14 +3,14 @@ package com.yyshare.Service;
 import java.util.Date;
 
 /**
- * 指标数据初始化服务
+ * 指标数据计算服务
  */
 public interface IInitService {
 
     /**
-     * 初始化计算指标数据
+     * 计算指标数据并保存
      * @param startTime
      * @param type
      */
-    void init(Date startTime, String type);
+    void computeIfNull(Date startTime, Date endTime, String type);
 }
